@@ -1,14 +1,14 @@
 (function () {
   "use strict";
 
-  // Menu on small screens: a plain list under the header.
+  // Menu on small screens: opens under the header.
   var btn = document.getElementById("menuBtn");
   var menu = document.getElementById("menu");
   if (btn && menu) {
     function setOpen(open) {
       menu.hidden = !open;
       btn.setAttribute("aria-expanded", String(open));
-      btn.textContent = open ? "Stäng" : "Meny";
+      btn.setAttribute("aria-label", open ? "Stäng menyn" : "Meny");
     }
     btn.addEventListener("click", function () { setOpen(menu.hidden); });
     menu.addEventListener("click", function (e) { if (e.target.closest("a")) setOpen(false); });
@@ -97,7 +97,7 @@
       sendErr.hidden = false;
     }).then(function () {
       submit.disabled = false;
-      submit.textContent = "Skicka";
+      submit.textContent = "Skicka förfrågan";
     });
   });
 

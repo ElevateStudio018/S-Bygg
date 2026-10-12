@@ -134,11 +134,12 @@ STEPS = [
 
 # --- Markup helpers -------------------------------------------------------------------------------------------------
 E = html.escape
-ARROW = '<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>'
+PHONE_ICON = ('<svg class="pi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+              '<path d="M21 16.5v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.1 3.8 2 2 0 0 1 3.1 1.6h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7.1 9.5a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'
+              '<path d="M15 2.5a6.5 6.5 0 0 1 6.5 6.5M15 6a3 3 0 0 1 3 3"/></svg>')
 STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 1.6 2.6 5.4 5.9.8-4.3 4.1 1 5.9L10 15l-5.2 2.8 1-5.9L1.5 7.8l5.9-.8z"/></svg>'
-FAVICON = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23141414'/>"
-           "<text x='16' y='23.5' text-anchor='middle' font-family='Arial,sans-serif' font-weight='700' font-size='20' fill='%23ffffff'>S</text>"
-           "<rect x='0' y='28' width='32' height='4' fill='%23d2451e'/></svg>")
+FAVICON = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ff7a1a'/>"
+           "<text x='16' y='23' text-anchor='middle' font-family='Arial,sans-serif' font-weight='800' font-size='20' fill='%23102a52'>S</text></svg>")
 
 
 def stars(n=5):
@@ -150,28 +151,43 @@ def img(src, alt="", pos="50% 50%", sizes="100vw", lazy=True):
             f'alt="{E(alt)}"{" loading=\"lazy\"" if lazy else " fetchpriority=\"high\""} decoding="async" style="object-position:{pos}">')
 
 
-def logo():
-    return '<span class="wm">S-Bygg<small>i Umeå AB</small></span>'
+def photo(src, alt, pos="50% 50%", sizes="(min-width: 960px) 50vw, 100vw"):
+    """A rounded photo with the note that it is a stock photo, not S-Bygg's own."""
+    return f'<figure class="ph">{img(src, alt, pos, sizes)}<figcaption>Illustrationsbild</figcaption></figure>'
 
 
-NAV = [("tjanster", "Tjänster"), ("referens", "Referens"), ("om", "Om oss"), ("kontakt", "Kontakt")]
+# The logo: the name set in a coloured block, the way a sign on a van would be. Replace with S-Bygg's own when there is one.
+def logo(big=False):
+    return f'<span class="logo-block{" big" if big else ""}"><b>S-Bygg</b><span>i Umeå AB</span><small>BYGG · SNICKERI</small></span>'
+
+
+def call_btn(label=None, cls=""):
+    return f'<a class="pill pill-go {cls}" href="tel:{TEL}">{PHONE_ICON}<span>{label or "Ring " + PHONE}</span></a>'
+
+
+NAV = [("tjanster", "Tjänster"), ("referens", "Referens"), ("om-oss", "Om oss"), ("fragor", "Frågor"), ("kontakt", "Kontakt")]
 
 
 def header(home):
     pre = "" if home else "index.html"
     links = "".join(f'<a href="{pre}#{a}">{t}</a>' for a, t in NAV)
     rows = "".join(f'<li><a href="{pre}#{a}">{t}</a></li>' for a, t in NAV)
+    svc = "".join(f'<li><a href="tjanst-{s["slug"]}.html">{s["title"]}</a></li>' for s in SERVICES)
     return f'''<a class="skip" href="#main">Hoppa till innehållet</a>
 <header class="head">
   <div class="wrap bar">
     <a class="logo" href="{'#top' if home else 'index.html'}" aria-label="{NAME}, till startsidan">{logo()}</a>
     <nav class="nav" aria-label="Huvudmeny">{links}</nav>
-    <a class="tel" href="tel:{TEL}">{PHONE}</a>
-    <a class="btn btn-go head-cta" href="{pre}#offert">Begär offert</a>
-    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Meny</button>
+    <a class="pill pill-go head-call" href="tel:{TEL}">{PHONE_ICON}<span>{PHONE}</span></a>
+    <a class="round round-go head-round" href="tel:{TEL}" aria-label="Ring {PHONE}">{PHONE_ICON}</a>
+    <button class="burger" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Meny"><span></span><span></span></button>
   </div>
   <nav class="menu" id="menu" aria-label="Meny" hidden>
-    <ul class="wrap">{rows}<li><a href="tel:{TEL}">Ring {PHONE}</a></li></ul>
+    <div class="wrap">
+      <ul class="menu-main">{rows}</ul>
+      <p class="menu-h">Tjänster</p><ul class="menu-svc">{svc}</ul>
+      {call_btn()}
+    </div>
   </nav>
 </header>'''
 
@@ -179,18 +195,23 @@ def header(home):
 def footer(home):
     pre = "" if home else "index.html"
     svc = "".join(f'<li><a href="tjanst-{s["slug"]}.html">{s["title"]}</a></li>' for s in SERVICES)
-    mail = f'<li><a href="mailto:{EMAIL}">{EMAIL}</a></li>' if EMAIL else ""
-    org = f"<li>Org.nr {ORG_NR}</li>" if ORG_NR else ""
+    mail = f'<p><a href="mailto:{EMAIL}">{EMAIL}</a></p>' if EMAIL else ""
+    org = f"<p>Org.nr {ORG_NR}</p>" if ORG_NR else ""
     return f'''<footer class="foot">
   <div class="wrap">
+    <a class="logo" href="{pre or '#top'}" aria-label="{NAME}, till startsidan">{logo(big=True)}</a>
     <div class="foot-grid">
-      <div><a class="logo" href="{pre or '#top'}">{logo()}</a></div>
-      <ul><li><a href="tel:{TEL}">{PHONE}</a></li>{mail}<li><a href="{MAPS_LINK}" target="_blank" rel="noopener">{ADDR}</a></li>{org}</ul>
-      <ul>{svc}</ul>
-      <ul>{"".join(f'<li><a href="{pre}#{a}">{t}</a></li>' for a, t in NAV)}<li><a href="{pre}#offert">Begär offert</a></li></ul>
+      <div>
+        <p class="foot-h">{NAME}</p>
+        <p><b>Umeå</b></p>
+        <p>{STREET},<br>{POSTAL} {CITY}</p>
+        <p><a href="tel:{TEL}">{PHONE}</a></p>{mail}{org}
+      </div>
+      <div><p class="foot-h">Tjänster</p><ul>{svc}</ul></div>
+      <div><p class="foot-h">S-Bygg</p><ul>{"".join(f'<li><a href="{pre}#{a}">{t}</a></li>' for a, t in NAV)}<li><a href="{pre}#offert">Begär offert</a></li></ul></div>
     </div>
     <div class="foot-end">
-      <span>© <span data-year>2026</span> {NAME}. Bilderna är stockfoton från Pexels.</span>
+      <span>© <span data-year>2026</span> {NAME} · Bilderna är stockfoton från Pexels</span>
       <a href="https://elevatestudio.nu" target="_blank" rel="noopener">Byggd av Elevate Studio</a>
     </div>
   </div>
@@ -230,9 +251,9 @@ def page(name, title, desc, main, home=False, image="hero-renovering"):
 <meta property="og:title" content="{E(title)}">
 <meta property="og:description" content="{E(desc)}">
 <meta property="og:image" content="{SITE_URL}img/{image}.jpg">
-<meta name="theme-color" content="#141414">
+<meta name="theme-color" content="#102a52">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 <link rel="icon" href="data:image/svg+xml,{FAVICON}">
 {jsonld() if home else ''}
@@ -246,103 +267,133 @@ def page(name, title, desc, main, home=False, image="hero-renovering"):
     (OUT / name).write_text(doc, encoding="utf-8")
 
 
-def section(sid, title, body, cls=""):
-    """Every section: a rule across the page, the heading in the left column, the content in the right."""
-    return (f'<section class="sec {cls}" id="{sid}" aria-labelledby="{sid}-h"><div class="wrap cols">'
-            f'<h2 id="{sid}-h">{title}</h2><div class="body">{body}</div></div></section>')
+def card(s):
+    return (f'<li class="card"><a href="tjanst-{s["slug"]}.html">{photo(s["photo"], s["alt"], s["pos"], "(min-width: 960px) 33vw, 100vw")}'
+            f'<h3>{s["title"]}</h3><p>{s["short"]}</p><span class="more">Läs mer</span></a></li>')
 
 
-def service_row(s):
-    return (f'<li><a class="row" href="tjanst-{s["slug"]}.html"><span class="row-ph">{img(s["photo"], "", s["pos"], "160px")}</span>'
-            f'<span class="row-t"><b>{s["title"]}</b><span>{s["short"]}</span></span>{ARROW}</a></li>')
+def ask_pills(skip=None):
+    return "".join(f'<a class="pill pill-blue" href="tjanst-{s["slug"]}.html">{s["title"]}</a>' for s in ASK if s["slug"] != skip)
 
 
-def review_block():
+def review_block(center=False):
     out = []
     for r in REVIEWS:
-        more = (f'<a href="{MAPS_LINK}" target="_blank" rel="noopener">Läs hela omdömet på Google</a>' if r.get("truncated") else "")
-        reply = f'<p class="reply"><b>S-Bygg svarade:</b> ”{E(r["reply"])}”</p>' if r.get("reply") else ""
-        out.append(f'<figure class="review">{stars(r["stars"])}<blockquote><p>”{E(r["text"])}”</p></blockquote>'
-                   f'<figcaption>{E(r["name"])}, Google · {more}</figcaption>{reply}</figure>')
+        more = (f' · <a href="{MAPS_LINK}" target="_blank" rel="noopener">Läs hela på Google</a>' if r.get("truncated") else "")
+        reply = f'<p class="reply"><b>Svar från S-Bygg:</b> ”{E(r["reply"])}”</p>' if r.get("reply") else ""
+        out.append(f'<figure class="review{" center" if center else ""}">{stars(r["stars"])}<blockquote><p>”{E(r["text"])}”</p></blockquote>'
+                   f'<figcaption><b>{E(r["name"])}</b>, omdöme på Google{more}</figcaption>{reply}</figure>')
     return "".join(out)
 
 
 def quote_form():
     opts = "".join(f"<option>{E(t)}</option>" for t in WORK_TYPES)
+    req = '<span class="req" aria-hidden="true">*</span>'
     return f'''<form class="form" id="qform" novalidate data-endpoint="https://formsubmit.co/ajax/{FORM_EMAIL}">
-  <div class="f2">
-    <p class="field"><label for="f-namn">Namn</label><input id="f-namn" name="Namn" autocomplete="name" required><span class="err" id="e-namn" hidden>Skriv ditt namn.</span></p>
-    <p class="field"><label for="f-tel">Telefon</label><input id="f-tel" name="Telefon" type="tel" autocomplete="tel"><span class="err" id="e-tel" hidden>Skriv telefon eller e-post.</span></p>
-  </div>
-  <div class="f2">
-    <p class="field"><label for="f-epost">E-post</label><input id="f-epost" name="E-post" type="email" autocomplete="email"><span class="err" id="e-epost" hidden>Kontrollera e-postadressen.</span></p>
-    <p class="field"><label for="f-typ">Typ av jobb</label><select id="f-typ" name="Typ av byggprojekt"><option value="">Välj</option>{opts}</select></p>
-  </div>
+  <p class="field"><label for="f-typ">Typ av jobb</label><select id="f-typ" name="Typ av byggprojekt"><option value="">– Välj ett alternativ –</option>{opts}</select></p>
+  <p class="field"><label for="f-namn">För- och efternamn{req}</label><input id="f-namn" name="Namn" autocomplete="name" required><span class="err" id="e-namn" hidden>Skriv ditt namn.</span></p>
+  <p class="field"><label for="f-tel">Telefonnummer{req}</label><input id="f-tel" name="Telefon" type="tel" autocomplete="tel"><span class="err" id="e-tel" hidden>Skriv telefonnummer eller e-post.</span></p>
+  <p class="field"><label for="f-epost">E-post</label><input id="f-epost" name="E-post" type="email" autocomplete="email"><span class="err" id="e-epost" hidden>Kontrollera e-postadressen.</span></p>
   <p class="field"><label for="f-besk">Beskriv jobbet</label><textarea id="f-besk" name="Beskrivning" rows="5" placeholder="Vad ska göras, var och när?"></textarea></p>
   <p class="hp" aria-hidden="true"><label for="f-web">Lämna tomt</label><input id="f-web" name="_honey" tabindex="-1" autocomplete="off"></p>
-  <p class="form-end"><button class="btn btn-go" type="submit">Skicka</button><span>Telefon eller e-post räcker. Vi använder uppgifterna bara för att svara dig.</span></p>
+  <p class="small">{req} Telefonnummer eller e-post räcker. Uppgifterna används bara för att svara dig.</p>
+  <p><button class="pill pill-blue" type="submit">Skicka förfrågan</button></p>
   <p class="send-err" id="send-err" role="alert" hidden>Det gick inte att skicka just nu. Försök igen, eller ring <a href="tel:{TEL}">{PHONE}</a>.</p>
 </form>
 <div class="done" id="qdone" tabindex="-1" hidden>
-  <p class="done-h">Tack, vi har fått din förfrågan.</p>
+  <p class="done-h">Tack! Vi har fått din förfrågan.</p>
   <p>Vi hör av oss så snart vi kan. Brådskar det, ring <a href="tel:{TEL}">{PHONE}</a>.</p>
-  <button class="link" type="button" id="qagain">Skicka en till</button>
+  <p><button class="link" type="button" id="qagain">Skicka en ny förfrågan</button></p>
 </div>'''
 
 
 # --- Start page -----------------------------------------------------------------------------------------------------
 def index():
-    done = "".join(service_row(s) for s in DONE)
-    ask = ", ".join(f'<a href="tjanst-{s["slug"]}.html">{s["title"].lower() if i else s["title"]}</a>' for i, s in enumerate(ASK))
-    steps = "".join(f"<li><b>{t}</b><span>{d}</span></li>" for t, d in STEPS)
+    cards = "".join(card(s) for s in DONE)
+    steps = "".join(f"<li><b>{t}</b> {d}</li>" for t, d in STEPS)
     faq = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in FAQ)
-
-    tjanster = f'''<ul class="rows">{done}</ul>
-<p class="also">Fråga oss också om {ask}.</p>'''
-
-    referens = f'''<figure class="ref-ph">{img("kok-2", "Ljust kök med köksö och trägolv", "50% 50%", "(min-width: 960px) 66vw, 100vw")}<figcaption>Illustrationsbild, inte från projektet.</figcaption></figure>
-<h3>Kök i Västerbottensvilla, Umeå</h3>
-<p class="ref-txt">Totalrenovering av köket och en ny öppning med utgång från köket till en större altan.</p>
-{review_block()}
-<p class="rating">{stars()} {RATING} av 5 på Google ({REVIEW_COUNT} omdöme)</p>'''
-
-    om = f'''<div class="om">
-  <div>
-    <p class="big">{NAME} är ett bygg- och snickeriföretag i Umeå. Vi renoverar och bygger om i villor och bostäder: kök, väggar, öppningar och snickeriet runt omkring.</p>
-    <h3>Så går det till</h3>
-    <ol class="steps">{steps}</ol>
-  </div>
-  <figure>{img("snickeri", "Snickare sågar till en träbit i verkstaden", "50% 50%", "(min-width: 960px) 33vw, 100vw")}<figcaption>Illustrationsbild.</figcaption></figure>
-</div>'''
-
-    fragor = f'<div class="faq">{faq}</div>'
-
-    kontakt = f'''<div class="kontakt">
-  <div>
-    <a class="phone" href="tel:{TEL}">{PHONE}</a>
-    <dl class="facts"><div><dt>Adress</dt><dd>{ADDR}</dd></div><div><dt>Tider</dt><dd>{HOURS}</dd></div></dl>
-  </div>
-  <div id="offert"><h3>Begär offert</h3>{quote_form()}</div>
-</div>'''
+    done_links = " ".join(f'<a class="pill pill-blue" href="tjanst-{s["slug"]}.html">{s["title"]}</a>' for s in DONE)
 
     main = f'''<section class="hero" id="top" aria-labelledby="hero-h">
   <div class="hero-ph">{img("hero-renovering", "Snickare i ett hus under ombyggnad", "50% 45%", lazy=False)}</div>
   <div class="wrap hero-in">
-    <h1 id="hero-h">Snickare i Umeå</h1>
-    <p>Köksrenoveringar, ombyggnader och nya öppningar i villor och bostäder.</p>
-    <p class="hero-btns"><a class="btn btn-go" href="#offert">Begär offert</a><a class="btn btn-ghost" href="tel:{TEL}">Ring {PHONE}</a></p>
-    <a class="hero-rate" href="#referens">{stars()} {RATING} på Google</a>
+    <h1 id="hero-h">Snickare och byggfirma i Umeå</h1>
+    <p>{NAME} gör köksrenoveringar, ombyggnader och nya öppningar i villor och bostäder i Umeå.</p>
+    <div class="btns">{call_btn()}<a class="pill pill-blue" href="#offert">Begär offert</a></div>
   </div>
   <span class="hero-note">Illustrationsbild</span>
 </section>
-{section("tjanster", "Tjänster", tjanster)}
-{section("referens", "Referens", referens)}
-{section("om", "Om oss", om)}
-{section("fragor", "Vanliga frågor", fragor)}
-{section("kontakt", "Kontakt", kontakt, "dark")}
+
+<section class="sec tint" aria-labelledby="intro-h">
+  <div class="wrap split">
+    {photo("kok-2", "Ljust kök med köksö och trägolv")}
+    <div>
+      <h2 id="intro-h">Köksrenovering och ombyggnad i Umeå</h2>
+      <p class="lead">Vi river, bygger om och renoverar i villor och bostäder i Umeå. Senast totalrenoverade vi ett kök i en Västerbottensvilla och tog upp en ny utgång från köket till altanen.</p>
+      <div class="btns">{done_links}</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="tjanster" aria-labelledby="tj-h">
+  <div class="wrap">
+    <h2 id="tj-h">Våra tjänster</h2>
+    <ul class="cards">{cards}</ul>
+    <h3 class="also-h">Vi tar också förfrågningar om</h3>
+    <div class="btns">{ask_pills()}</div>
+  </div>
+</section>
+
+<section class="sec tint" id="referens" aria-labelledby="ref-h">
+  <div class="wrap narrow center">
+    <h2 id="ref-h">Vad kunderna säger</h2>
+    <p class="lead">{RATING} av 5 på Google ({REVIEW_COUNT} omdöme).</p>
+    {review_block(center=True)}
+  </div>
+</section>
+
+<section class="sec" id="om-oss" aria-labelledby="om-h">
+  <div class="wrap split">
+    {photo("snickeri", "Snickare sågar till en träbit i verkstaden")}
+    <div>
+      <h2 id="om-h">Ett lokalt byggföretag i Umeå</h2>
+      <p class="lead">{NAME} är ett bygg- och snickeriföretag i Umeå. Vi renoverar och bygger om i villor och bostäder: kök, väggar, öppningar och snickeriet runt omkring.</p>
+      <h3>Så går det till</h3>
+      <ol class="steps">{steps}</ol>
+      <div class="btns">{call_btn()}</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec tint" id="kontakt" aria-labelledby="kt-h">
+  <div class="wrap narrow">
+    <h2 id="kt-h">Bli kontaktad av S-Bygg</h2>
+    <p class="lead">Fyll i formuläret så hör vi av oss. Vill du hellre ringa går det bra, vi svarar {HOURS[0].lower() + HOURS[1:]}.</p>
+    <div class="btns">{call_btn()}</div>
+    <div id="offert">{quote_form()}</div>
+  </div>
+</section>
+
+<section class="sec" id="fragor" aria-labelledby="fq-h">
+  <div class="wrap narrow">
+    <h2 id="fq-h">Vanliga frågor</h2>
+    <div class="faq">{faq}</div>
+  </div>
+</section>
+
+<section class="sec tint seo" aria-labelledby="seo-h">
+  <div class="wrap narrow">
+    <h2 id="seo-h">S-Bygg i Umeå</h2>
+    <p>S-Bygg är en byggfirma i Umeå med inriktning på renovering och ombyggnad i bostäder. Vi gör <a href="tjanst-kok.html">köksrenoveringar i Umeå</a>, från nya luckor till totalrenovering, och <a href="tjanst-ombyggnad.html">ombyggnader och renoveringar</a> när planlösningen inte längre passar.</p>
+    <p>Vill du öppna upp mellan två rum eller få en ny utgång till altanen tar vi upp <a href="tjanst-oppningar.html">nya öppningar och dörrar</a>. Ring {PHONE} eller <a href="#offert">begär en offert</a>, så tittar vi på jobbet.</p>
+    <h3>Hitta hit</h3>
+    <p>{NAME}, {ADDR}.</p>
+    <div class="btns"><a class="pill pill-go" href="{MAPS_LINK}" target="_blank" rel="noopener">Öppna i Google Maps</a></div>
+  </div>
+</section>
+
 <section class="map" aria-label="Karta">
   <iframe src="{MAP_EMBED}" title="Karta: {ADDR}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  <p class="wrap"><a href="{MAPS_LINK}" target="_blank" rel="noopener">Öppna i Google Maps {ARROW}</a></p>
 </section>'''
     page("index.html", "Snickare i Umeå – kök, ombyggnad, renovering | S-Bygg i Umeå AB",
          "S-Bygg i Umeå AB gör köksrenoveringar, ombyggnader och nya öppningar i villor och bostäder i Umeå. Ring 070-332 06 44 eller begär offert.",
@@ -353,36 +404,42 @@ def index():
 def service_page(s):
     items = "".join(f"<li>{i}</li>" for i in s["items"])
     body = "".join(f"<p>{p}</p>" for p in s["body"])
-    review = ""
-    if s["confirmed"]:
-        review = f'<h3>Omdöme</h3>{review_block()}'
-    others = "".join(service_row(o) for o in SERVICES if o["slug"] != s["slug"])
-    content = f'''<div class="svc">
-  <div class="prose">{body}
-    <h3>Det kan ingå</h3><ul class="list">{items}</ul>
-    {review}
-  </div>
-  <aside class="svc-side">
-    <a class="btn btn-go" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a>
-    <a class="btn btn-line" href="tel:{TEL}">Ring {PHONE}</a>
-  </aside>
-</div>'''
-    main = f'''<section class="phero" aria-labelledby="ph-h">
-  <div class="wrap">
+    review = f'<h2>Omdöme</h2>{review_block()}' if s["confirmed"] else ""
+    others = "".join(card(o) for o in DONE if o["slug"] != s["slug"])
+    main = f'''<section class="hero hero-small" aria-labelledby="ph-h">
+  <div class="hero-ph">{img(s["photo"], s["alt"], s["pos"], lazy=False)}</div>
+  <div class="wrap hero-in">
     <nav class="crumbs" aria-label="Brödsmulor"><a href="index.html">Start</a> / <a href="index.html#tjanster">Tjänster</a> / <span aria-current="page">{s["title"]}</span></nav>
     <h1 id="ph-h">{s["title"]} i Umeå</h1>
     <p>{s["short"]}</p>
+    <div class="btns">{call_btn()}<a class="pill pill-blue" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a></div>
   </div>
-  <figure class="wrap phero-ph">{img(s["photo"], s["alt"], s["pos"], lazy=False)}<figcaption>Illustrationsbild.</figcaption></figure>
+  <span class="hero-note">Illustrationsbild</span>
 </section>
-{section("om-jobbet", "Om jobbet", content)}
-{section("fler", "Fler tjänster", f'<ul class="rows">{others}</ul>')}'''
+<section class="sec">
+  <div class="wrap narrow prose">
+    <h2>{s["title"]} med S-Bygg</h2>
+    {body}
+    <h3>Det kan ingå</h3>
+    <ul class="list">{items}</ul>
+    {review}
+    <div class="btns">{call_btn()}<a class="pill pill-blue" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a></div>
+  </div>
+</section>
+<section class="sec tint">
+  <div class="wrap">
+    <h2>Fler tjänster</h2>
+    <ul class="cards">{others}</ul>
+    <h3 class="also-h">Vi tar också förfrågningar om</h3>
+    <div class="btns">{ask_pills(skip=s["slug"])}</div>
+  </div>
+</section>'''
     desc = f'{s["title"]} i Umeå. {s["short"]} S-Bygg i Umeå AB, telefon 070-332 06 44.'
     page(f'tjanst-{s["slug"]}.html', f'{s["title"]} i Umeå | S-Bygg i Umeå AB', desc, main, image=s["photo"])
 
 
 def not_found():
-    main = '<section class="phero"><div class="wrap"><h1>Sidan finns inte</h1><p><a href="index.html">Till startsidan</a></p></div></section>'
+    main = f'<section class="sec"><div class="wrap narrow"><h1>Sidan finns inte</h1><div class="btns"><a class="pill pill-blue" href="index.html">Till startsidan</a>{call_btn()}</div></div></section>'
     page("404.html", "Sidan finns inte | S-Bygg i Umeå AB", "Sidan kunde inte hittas.", main)
 
 

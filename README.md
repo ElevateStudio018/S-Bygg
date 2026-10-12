@@ -1,16 +1,17 @@
 # S-Bygg i Umeå AB – webbplats
 
-Ny webbplats för S-Bygg i Umeå AB (bygg och snickeri i Umeå), byggd på Stenvaller-mallen men avskalad:
-vitt, svart och grått, en enda signalorange som bara används på knapparna till offert, ett typsnitt (Archivo),
-raka hörn, inga skuggor, inga ikoner i cirklar, inga dekorativa etiketter och inga animationer. Varje sektion har
-en linje överst, rubriken i vänster kolumn och innehållet i höger.
+Ny webbplats för S-Bygg i Umeå AB (bygg och snickeri i Umeå), i samma anda som svanstromsel.se: två
+varumärkesfärger som bär hela sidan (mörkblått och signalorange), loggan som en färgad skylt, runda ”Ring”-knappar,
+piller-knappar, stor och lättläst text (Plus Jakarta Sans), stora foton med rundade hörn, enkla staplade sektioner
+och en mörkblå sidfot. Inga ikoner, etiketter eller effekter. Loggan i `logo()` är en tillfällig textlogga tills
+S-Bygg har en egen.
 
 ## Sidor
 
 Allt ligger i [`docs/`](docs/) och kräver inga verktyg – öppna `docs/index.html` i en webbläsare.
 
-- `index.html` – startsidan: hero, tjänster, referens med kundomdöme, om oss med arbetsgång, vanliga frågor,
-  kontakt med offertformulär och karta
+- `index.html` – startsidan: hero, kök och ombyggnad, tjänster, kundomdöme, om oss med arbetsgång, kontakt med
+  offertformulär, vanliga frågor, SEO-text med interna länkar och karta
 - sex tjänstesidor: `tjanst-kok.html`, `tjanst-ombyggnad.html`, `tjanst-oppningar.html`, `tjanst-altan.html`,
   `tjanst-tillbyggnad.html`, `tjanst-inredning.html`
 - `404.html`, `sitemap.xml`, `robots.txt`
@@ -32,8 +33,8 @@ slutar där Google klipper det – resten är inte påhittat.
 **Förslag (genererad text) som S-Bygg bör bekräfta eller ändra:**
 
 - Tjänsterna *Altaner och trädäck*, *Tillbyggnader* och *Inredningssnickeri* (`confirmed=False` i `SERVICES`).
-  *Köksrenovering*, *Ombyggnad och renovering* och *Nya öppningar och dörrar* bygger på kundomdömet och står först
-  på startsidan; de övriga nämns under ”Fråga oss också om”.
+  *Köksrenovering*, *Ombyggnad och renovering* och *Nya öppningar och dörrar* bygger på kundomdömet och visas som
+  tjänstekort; de övriga som knappar under ”Vi tar också förfrågningar om”.
 - Listorna ”Det kan ingå” på tjänstesidorna, arbetsprocessen och svaren i Vanliga frågor.
 - Tiderna (`HOURS`): Google Maps säger bara att företaget stänger kl. 16.
 - `EMAIL` och `ORG_NR` är tomma tills de är kända; då visas de inte alls.
