@@ -1,15 +1,15 @@
 # S-Bygg i Umeå AB – webbplats
 
-Ny webbplats för S-Bygg i Umeå AB (bygg och snickeri i Umeå). Byggd på Stenvaller-mallen men omgjord:
-skogsgrönt och ek i stället för marinblått, Archivo + Figtree, en takfot (∧) under rubrikerna i stället för
-Stenvallers V, en delad hero med en tumstock som vecklas ut längs kanten, en meny som glider in från höger,
-ikoner som ritar sig själva och en offertförfrågan som skickas direkt från sidan.
+Ny webbplats för S-Bygg i Umeå AB (bygg och snickeri i Umeå), byggd på Stenvaller-mallen men avskalad:
+vitt, svart och grått, en enda signalorange som bara används på knapparna till offert, ett typsnitt (Archivo),
+raka hörn, inga skuggor, inga ikoner i cirklar, inga dekorativa etiketter och inga animationer. Varje sektion har
+en linje överst, rubriken i vänster kolumn och innehållet i höger.
 
 ## Sidor
 
 Allt ligger i [`docs/`](docs/) och kräver inga verktyg – öppna `docs/index.html` i en webbläsare.
 
-- `index.html` – startsidan: hero, tjänster, om oss, referensprojekt, omdömen, arbetsprocess, vanliga frågor,
+- `index.html` – startsidan: hero, tjänster, referens med kundomdöme, om oss med arbetsgång, vanliga frågor,
   kontakt med offertformulär och karta
 - sex tjänstesidor: `tjanst-kok.html`, `tjanst-ombyggnad.html`, `tjanst-oppningar.html`, `tjanst-altan.html`,
   `tjanst-tillbyggnad.html`, `tjanst-inredning.html`
@@ -32,9 +32,9 @@ slutar där Google klipper det – resten är inte påhittat.
 **Förslag (genererad text) som S-Bygg bör bekräfta eller ändra:**
 
 - Tjänsterna *Altaner och trädäck*, *Tillbyggnader* och *Inredningssnickeri* (`confirmed=False` i `SERVICES`).
-  *Köksrenovering*, *Ombyggnad och renovering* och *Nya öppningar och dörrar* bygger på kundomdömet och har
-  märket ”Utfört åt kund”.
-- Listorna ”Det här kan ingå” på tjänstesidorna, arbetsprocessen och svaren i Vanliga frågor.
+  *Köksrenovering*, *Ombyggnad och renovering* och *Nya öppningar och dörrar* bygger på kundomdömet och står först
+  på startsidan; de övriga nämns under ”Fråga oss också om”.
+- Listorna ”Det kan ingå” på tjänstesidorna, arbetsprocessen och svaren i Vanliga frågor.
 - Tiderna (`HOURS`): Google Maps säger bara att företaget stänger kl. 16.
 - `EMAIL` och `ORG_NR` är tomma tills de är kända; då visas de inte alls.
 
@@ -60,14 +60,10 @@ med samma namn (både `namn.jpg`, ca 1800 px, och `namn-s.jpg`, ca 800 px).
 | `kok-2.jpg` | [4713242](https://www.pexels.com/photo/4713242/) |
 | `ombyggnad.jpg` | [3990359](https://www.pexels.com/photo/3990359/) |
 | `dorr.jpg` | [5691502](https://www.pexels.com/photo/5691502/) |
-| `fonster.jpg` | [5691544](https://www.pexels.com/photo/5691544/) |
 | `altan.jpg` | [10847167](https://www.pexels.com/photo/10847167/) |
-| `altan-2.jpg` | [7587879](https://www.pexels.com/photo/7587879/) |
 | `tillbyggnad.jpg` | [8830259](https://www.pexels.com/photo/8830259/) |
 | `inredning.jpg` | [5974396](https://www.pexels.com/photo/5974396/) |
 | `snickeri.jpg` | [6790094](https://www.pexels.com/photo/6790094/) |
-| `matt.jpg` | [5973894](https://www.pexels.com/photo/5973894/) |
-| `hus-vasterbotten.jpg` | [210538](https://www.pexels.com/photo/210538/) (Skellefteå) |
 
 ## Publicera
 
