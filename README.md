@@ -71,5 +71,5 @@ med samma namn (både `namn.jpg`, ca 1800 px, och `namn-s.jpg`, ca 800 px).
 
 ## Publicera
 
-Slå på GitHub Pages i repots inställningar: *Deploy from a branch*, mappen `/docs`. Byt `SITE_URL` i
+Sidan publiceras automatiskt av `.github/workflows/deploy-pages.yml` vid varje push (GitHub Pages, källa *GitHub Actions*). Byt `SITE_URL` i
 `scripts/build.py` om sidan får en egen domän.
