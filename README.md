@@ -1,10 +1,16 @@
 # S-Bygg i Umeå AB – webbplats
 
-Ny webbplats för S-Bygg i Umeå AB (bygg och snickeri i Umeå), i samma anda som svanstromsel.se: två
-varumärkesfärger som bär hela sidan (mörkblått och signalorange), loggan som en färgad skylt, runda ”Ring”-knappar,
-piller-knappar, stor och lättläst text (Plus Jakarta Sans), stora foton med rundade hörn, enkla staplade sektioner
-och en mörkblå sidfot. Inga ikoner, etiketter eller effekter. Loggan i `logo()` är en tillfällig textlogga tills
-S-Bygg har en egen.
+Ny webbplats för S-Bygg i Umeå AB (bygg och snickeri i Umeå), i samma anda som svanstromsel.se: loggans färger
+bär hela sidan (kolsvart, loggans röda och vitt), runda ”Ring”-knappar, piller-knappar, stor och lättläst text
+(Plus Jakarta Sans), stora foton med rundade hörn, enkla staplade sektioner och en mörk sidfot.
+
+## Logga
+
+S-Byggs logga är vektoriserad från `assets-src/s-bygg-logo-original.jpg`:
+
+- `docs/img/s-bygg-logo.svg` – röd S, vit BYGG (används i sidhuvud och sidfot)
+- `assets-src/s-bygg-logo-morkt.svg` – röd S, mörk BYGG, för ljus bakgrund
+- `docs/img/favicon.svg` – det röda S:et
 
 ## Sidor
 

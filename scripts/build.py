@@ -138,8 +138,6 @@ PHONE_ICON = ('<svg class="pi" viewBox="0 0 24 24" fill="none" stroke="currentCo
               '<path d="M21 16.5v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.1 3.8 2 2 0 0 1 3.1 1.6h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7.1 9.5a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'
               '<path d="M15 2.5a6.5 6.5 0 0 1 6.5 6.5M15 6a3 3 0 0 1 3 3"/></svg>')
 STAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 1.6 2.6 5.4 5.9.8-4.3 4.1 1 5.9L10 15l-5.2 2.8 1-5.9L1.5 7.8l5.9-.8z"/></svg>'
-FAVICON = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ff7a1a'/>"
-           "<text x='16' y='23' text-anchor='middle' font-family='Arial,sans-serif' font-weight='800' font-size='20' fill='%23102a52'>S</text></svg>")
 
 
 def stars(n=5):
@@ -156,13 +154,14 @@ def photo(src, alt, pos="50% 50%", sizes="(min-width: 960px) 50vw, 100vw"):
     return f'<figure class="ph">{img(src, alt, pos, sizes)}<figcaption>Illustrationsbild</figcaption></figure>'
 
 
-# The logo: the name set in a coloured block, the way a sign on a van would be. Replace with S-Bygg's own when there is one.
-def logo(big=False):
-    return f'<span class="logo-block{" big" if big else ""}"><b>S-Bygg</b><span>i Umeå AB</span><small>BYGG · SNICKERI</small></span>'
+# S-Bygg's own logo, traced to a vector from assets-src/s-bygg-logo-original.jpg: red S, white BYGG for the dark header
+# and footer. assets-src/s-bygg-logo-morkt.svg has dark letters for light backgrounds.
+def logo():
+    return '<img class="logo-img" src="img/s-bygg-logo.svg" alt="S-Bygg" width="480" height="125">'
 
 
 def call_btn(label=None, cls=""):
-    return f'<a class="pill pill-go {cls}" href="tel:{TEL}">{PHONE_ICON}<span>{label or "Ring " + PHONE}</span></a>'
+    return f'<a class="pill pill-red {cls}" href="tel:{TEL}">{PHONE_ICON}<span>{label or "Ring " + PHONE}</span></a>'
 
 
 NAV = [("tjanster", "Tjänster"), ("referens", "Referens"), ("om-oss", "Om oss"), ("fragor", "Frågor"), ("kontakt", "Kontakt")]
@@ -178,8 +177,8 @@ def header(home):
   <div class="wrap bar">
     <a class="logo" href="{'#top' if home else 'index.html'}" aria-label="{NAME}, till startsidan">{logo()}</a>
     <nav class="nav" aria-label="Huvudmeny">{links}</nav>
-    <a class="pill pill-go head-call" href="tel:{TEL}">{PHONE_ICON}<span>{PHONE}</span></a>
-    <a class="round round-go head-round" href="tel:{TEL}" aria-label="Ring {PHONE}">{PHONE_ICON}</a>
+    <a class="pill pill-red head-call" href="tel:{TEL}">{PHONE_ICON}<span>{PHONE}</span></a>
+    <a class="round round-red head-round" href="tel:{TEL}" aria-label="Ring {PHONE}">{PHONE_ICON}</a>
     <button class="burger" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Meny"><span></span><span></span></button>
   </div>
   <nav class="menu" id="menu" aria-label="Meny" hidden>
@@ -199,7 +198,7 @@ def footer(home):
     org = f"<p>Org.nr {ORG_NR}</p>" if ORG_NR else ""
     return f'''<footer class="foot">
   <div class="wrap">
-    <a class="logo" href="{pre or '#top'}" aria-label="{NAME}, till startsidan">{logo(big=True)}</a>
+    <a class="logo" href="{pre or '#top'}" aria-label="{NAME}, till startsidan">{logo()}</a>
     <div class="foot-grid">
       <div>
         <p class="foot-h">{NAME}</p>
@@ -251,11 +250,11 @@ def page(name, title, desc, main, home=False, image="hero-renovering"):
 <meta property="og:title" content="{E(title)}">
 <meta property="og:description" content="{E(desc)}">
 <meta property="og:image" content="{SITE_URL}img/{image}.jpg">
-<meta name="theme-color" content="#102a52">
+<meta name="theme-color" content="#1d1d1d">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/site.css">
-<link rel="icon" href="data:image/svg+xml,{FAVICON}">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 {jsonld() if home else ''}
 </head>
 <body>
@@ -273,7 +272,7 @@ def card(s):
 
 
 def ask_pills(skip=None):
-    return "".join(f'<a class="pill pill-blue" href="tjanst-{s["slug"]}.html">{s["title"]}</a>' for s in ASK if s["slug"] != skip)
+    return "".join(f'<a class="pill pill-dark" href="tjanst-{s["slug"]}.html">{s["title"]}</a>' for s in ASK if s["slug"] != skip)
 
 
 def review_block(center=False):
@@ -297,7 +296,7 @@ def quote_form():
   <p class="field"><label for="f-besk">Beskriv jobbet</label><textarea id="f-besk" name="Beskrivning" rows="5" placeholder="Vad ska göras, var och när?"></textarea></p>
   <p class="hp" aria-hidden="true"><label for="f-web">Lämna tomt</label><input id="f-web" name="_honey" tabindex="-1" autocomplete="off"></p>
   <p class="small">{req} Telefonnummer eller e-post räcker. Uppgifterna används bara för att svara dig.</p>
-  <p><button class="pill pill-blue" type="submit">Skicka förfrågan</button></p>
+  <p><button class="pill pill-dark" type="submit">Skicka förfrågan</button></p>
   <p class="send-err" id="send-err" role="alert" hidden>Det gick inte att skicka just nu. Försök igen, eller ring <a href="tel:{TEL}">{PHONE}</a>.</p>
 </form>
 <div class="done" id="qdone" tabindex="-1" hidden>
@@ -312,14 +311,14 @@ def index():
     cards = "".join(card(s) for s in DONE)
     steps = "".join(f"<li><b>{t}</b> {d}</li>" for t, d in STEPS)
     faq = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in FAQ)
-    done_links = " ".join(f'<a class="pill pill-blue" href="tjanst-{s["slug"]}.html">{s["title"]}</a>' for s in DONE)
+    done_links = " ".join(f'<a class="pill pill-dark" href="tjanst-{s["slug"]}.html">{s["title"]}</a>' for s in DONE)
 
     main = f'''<section class="hero" id="top" aria-labelledby="hero-h">
   <div class="hero-ph">{img("hero-renovering", "Snickare i ett hus under ombyggnad", "50% 45%", lazy=False)}</div>
   <div class="wrap hero-in">
     <h1 id="hero-h">Snickare och byggfirma i Umeå</h1>
     <p>{NAME} gör köksrenoveringar, ombyggnader och nya öppningar i villor och bostäder i Umeå.</p>
-    <div class="btns">{call_btn()}<a class="pill pill-blue" href="#offert">Begär offert</a></div>
+    <div class="btns">{call_btn()}<a class="pill pill-dark" href="#offert">Begär offert</a></div>
   </div>
   <span class="hero-note">Illustrationsbild</span>
 </section>
@@ -388,7 +387,7 @@ def index():
     <p>Vill du öppna upp mellan två rum eller få en ny utgång till altanen tar vi upp <a href="tjanst-oppningar.html">nya öppningar och dörrar</a>. Ring {PHONE} eller <a href="#offert">begär en offert</a>, så tittar vi på jobbet.</p>
     <h3>Hitta hit</h3>
     <p>{NAME}, {ADDR}.</p>
-    <div class="btns"><a class="pill pill-go" href="{MAPS_LINK}" target="_blank" rel="noopener">Öppna i Google Maps</a></div>
+    <div class="btns"><a class="pill pill-red" href="{MAPS_LINK}" target="_blank" rel="noopener">Öppna i Google Maps</a></div>
   </div>
 </section>
 
@@ -412,7 +411,7 @@ def service_page(s):
     <nav class="crumbs" aria-label="Brödsmulor"><a href="index.html">Start</a> / <a href="index.html#tjanster">Tjänster</a> / <span aria-current="page">{s["title"]}</span></nav>
     <h1 id="ph-h">{s["title"]} i Umeå</h1>
     <p>{s["short"]}</p>
-    <div class="btns">{call_btn()}<a class="pill pill-blue" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a></div>
+    <div class="btns">{call_btn()}<a class="pill pill-dark" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a></div>
   </div>
   <span class="hero-note">Illustrationsbild</span>
 </section>
@@ -423,7 +422,7 @@ def service_page(s):
     <h3>Det kan ingå</h3>
     <ul class="list">{items}</ul>
     {review}
-    <div class="btns">{call_btn()}<a class="pill pill-blue" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a></div>
+    <div class="btns">{call_btn()}<a class="pill pill-dark" href="index.html?typ={quote_plus(s["title"])}#offert">Begär offert</a></div>
   </div>
 </section>
 <section class="sec tint">
@@ -439,7 +438,7 @@ def service_page(s):
 
 
 def not_found():
-    main = f'<section class="sec"><div class="wrap narrow"><h1>Sidan finns inte</h1><div class="btns"><a class="pill pill-blue" href="index.html">Till startsidan</a>{call_btn()}</div></div></section>'
+    main = f'<section class="sec"><div class="wrap narrow"><h1>Sidan finns inte</h1><div class="btns"><a class="pill pill-dark" href="index.html">Till startsidan</a>{call_btn()}</div></div></section>'
     page("404.html", "Sidan finns inte | S-Bygg i Umeå AB", "Sidan kunde inte hittas.", main)
 
 
